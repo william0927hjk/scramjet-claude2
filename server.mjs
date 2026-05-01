@@ -56,13 +56,8 @@ app.use("/service", (_request, response) => {
         padding: 24px;
         text-align: center;
       }
-      strong {
-        font-size: 1.2rem;
-      }
-      p {
-        margin: 0;
-        color: #64726f;
-      }
+      strong { font-size: 1.2rem; }
+      p { margin: 0; color: #64726f; }
     </style>
   </head>
   <body>
@@ -74,21 +69,14 @@ app.use("/service", (_request, response) => {
     <script src="/uv.config.js"></script>
     <script type="module">
       const status = document.getElementById("status");
-
       try {
         const { BareMuxConnection } = await import("/baremux/index.mjs");
         const connection = new BareMuxConnection("/baremux/worker.js");
-        const currentTransport = await connection.getTransport().catch(() => "");
-
-        if (!currentTransport.includes("bare-as-module3")) {
-          await connection.setTransport("/bare-as-module3/index.mjs", [
-            new URL("/bare/", location.href).toString(),
-          ]);
-        }
-
+        await connection.setTransport("/bare-as-module3/index.mjs", [
+          new URL("/bare/", location.href).toString(),
+        ]);
         await navigator.serviceWorker.register("/sw.js", { scope: "/service/" });
         await navigator.serviceWorker.ready;
-
         const reloadKey = "uv-loader:" + location.pathname;
         if (sessionStorage.getItem(reloadKey)) {
           status.textContent = "Refresh once more if the page does not open.";
@@ -120,8 +108,9 @@ if (isProduction) {
 
 server.on("request", (request, response) => {
   response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-  response.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
-  
+  response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  response.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+
   if (bare.shouldRoute(request)) {
     bare.routeRequest(request, response);
     return;
@@ -135,7 +124,6 @@ server.on("upgrade", (request, socket, head) => {
     bare.routeUpgrade(request, socket, head);
     return;
   }
-
   socket.end();
 });
 
