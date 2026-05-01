@@ -52,11 +52,9 @@ function encodeUltravioletUrl(url) {
 }
 
 async function setupBareMux() {
-  const { BareMuxConnection } = await import(/* @vite-ignore */ "/baremux/index.mjs");
-  const connection = new BareMuxConnection("/baremux/worker.js");
-  await connection.setTransport(/* @vite-ignore */ "/bare-as-module3/index.mjs", [
-    new URL("/bare/", window.location.href).toString(),
-  ]);
+  if (navigator.serviceWorker.controller) return;
+  await navigator.serviceWorker.register("/sw.js", { scope: "/service/" });
+  await navigator.serviceWorker.ready;
 }
 
 function normalizeUrl(value) {
