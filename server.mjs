@@ -119,6 +119,9 @@ if (isProduction) {
 }
 
 server.on("request", (request, response) => {
+  response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  response.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+  
   if (bare.shouldRoute(request)) {
     bare.routeRequest(request, response);
     return;
