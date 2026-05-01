@@ -45,11 +45,9 @@ const proxyModes = {
 
 function encodeUltravioletUrl(url) {
   let encoded = "";
-
   for (let index = 0; index < url.length; index += 1) {
     encoded += index % 2 ? String.fromCharCode(url.charCodeAt(index) ^ 2) : url[index];
   }
-
   return encodeURIComponent(encoded);
 }
 
@@ -57,9 +55,8 @@ async function setupBareMux() {
   const { BareMuxConnection } = await import(/* @vite-ignore */ "/baremux/index.mjs");
   const connection = new BareMuxConnection("/baremux/worker.js");
   const current = await connection.getTransport().catch(() => "");
-  
-  if (!current.includes("epoxy")) {
-    await connection.setTransport("/epoxy/index.mjs", [
+  if (!current.includes("bare-as-module3")) {
+    await connection.setTransport(/* @vite-ignore */ "/bare-as-module3/index.mjs", [
       new URL("/bare/", window.location.href).toString(),
     ]);
   }
@@ -89,7 +86,6 @@ function Sidebar({ active, setActive }) {
         </span>
         <span>Portal</span>
       </div>
-
       <nav className="nav-list" aria-label="Main navigation">
         {items.map((item) => {
           const Icon = item.icon;
@@ -106,7 +102,6 @@ function Sidebar({ active, setActive }) {
           );
         })}
       </nav>
-
       <div className="sidebar-footer">
         <ShieldCheck size={18} />
         <span>Proxy-ready shell</span>
@@ -144,9 +139,7 @@ function BrowserPanel() {
   async function submit(event) {
     event.preventDefault();
     const normalized = normalizeUrl(address);
-    if (!normalized || isLaunching) {
-      return;
-    }
+    if (!normalized || isLaunching) return;
 
     if (mode === "scramjet") {
       setStatus("Scramjet is not installed yet. Ultraviolet is wired locally.");
@@ -176,7 +169,6 @@ function BrowserPanel() {
           <p>Choose the proxy backend, then launch a URL or search query.</p>
         </div>
       </div>
-
       <div className="segmented" aria-label="Proxy backend">
         {Object.entries(proxyModes).map(([key, option]) => (
           <button
@@ -189,7 +181,6 @@ function BrowserPanel() {
           </button>
         ))}
       </div>
-
       <form className="browser-bar" onSubmit={submit}>
         <Search size={20} />
         <input
@@ -203,11 +194,9 @@ function BrowserPanel() {
           <span>{isLaunching ? "Opening" : "Go"}</span>
         </button>
       </form>
-
       <div className={status === "Ready" ? "browser-status" : "browser-status active"}>
         {status}
       </div>
-
       <div className="proxy-details">
         <div>
           <strong>{selected.name} route</strong>
@@ -231,7 +220,6 @@ function Content({ active }) {
       </main>
     );
   }
-
   if (active === "games") {
     return (
       <main className="content">
@@ -240,7 +228,6 @@ function Content({ active }) {
       </main>
     );
   }
-
   if (active === "browser") {
     return (
       <main className="content">
@@ -248,7 +235,6 @@ function Content({ active }) {
       </main>
     );
   }
-
   return (
     <main className="content">
       <section className="hero">
@@ -306,7 +292,6 @@ function FeatureCard({ icon: Icon, title, text }) {
 
 function App() {
   const [active, setActive] = useState("home");
-
   return (
     <div className="app-shell">
       <Sidebar active={active} setActive={setActive} />
