@@ -14,7 +14,7 @@ const bare = createBareServer("/bare/", {
 
 const isProduction = process.env.NODE_ENV === "production";
 const port = Number(process.env.PORT || 5173);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.HOST || "0.0.0.0";
 
 app.use(
   express.static(path.join(__dirname, "node_modules", "@titaniumnetwork-dev", "ultraviolet", "dist")),
