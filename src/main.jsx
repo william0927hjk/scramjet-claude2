@@ -54,13 +54,15 @@ function encodeUltravioletUrl(url) {
 }
 
 async function setupBareMux() {
-  const bareMuxUrl = "/baremux/index.mjs";
-  const { BareMuxConnection } = await import(/* @vite-ignore */ bareMuxUrl);
+  const { BareMuxConnection } = await import(/* @vite-ignore */ "/baremux/index.mjs");
   const connection = new BareMuxConnection("/baremux/worker.js");
-
-  await connection.setTransport("/bare-as-module3/index.mjs", [
-    new URL("/bare/", window.location.href).toString(),
-  ]);
+  const current = await connection.getTransport().catch(() => "");
+  
+  if (!current.includes("epoxy")) {
+    await connection.setTransport("/epoxy/index.mjs", [
+      new URL("/bare/", window.location.href).toString(),
+    ]);
+  }
 }
 
 function normalizeUrl(value) {
