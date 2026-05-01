@@ -70,11 +70,6 @@ app.use("/service", (_request, response) => {
     <script type="module">
       const status = document.getElementById("status");
       try {
-        const { BareMuxConnection } = await import("/baremux/index.mjs");
-        const connection = new BareMuxConnection("/baremux/worker.js");
-        await connection.setTransport("/bare-as-module3/index.mjs", [
-          new URL("/bare/", location.href).toString(),
-        ]);
         await navigator.serviceWorker.register("/sw.js", { scope: "/service/" });
         await navigator.serviceWorker.ready;
         const reloadKey = "uv-loader:" + location.pathname;
